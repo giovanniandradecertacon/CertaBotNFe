@@ -1,9 +1,7 @@
 package br.com.certacon.certabotnfefiles.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import br.com.certacon.certabotnfefiles.utils.NfeStatus;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,4 +27,8 @@ public class NfeFileModel {
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private NfeStatus status;
 }
