@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.checkerframework.checker.units.qual.C;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
@@ -18,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Builder
-public class ArquivoNfeModel {
+public class NfeFileModel {
     @Id
     @GenericGenerator(name = "UUIDGenerator", strategy = "uuid2")
     @GeneratedValue(generator = "UUIDGenerator")
