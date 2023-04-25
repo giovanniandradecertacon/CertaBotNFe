@@ -1,6 +1,5 @@
 package br.com.certacon.certabotnfefiles.helpers;
 
-import br.com.certacon.certabotnfefiles.utils.NfeStatus;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
@@ -38,6 +37,24 @@ public class SeleniumHelperComponent {
         return Optional.ofNullable(sendBox);
     }
 
+    public Optional<WebElement> findElementByXpathAndClick(Long sleepTime, Long wait, String xpath, RemoteWebDriver remoteWebDriver) throws InterruptedException {
+        Thread.sleep(sleepTime);
+        WebElement clickSpace = new WebDriverWait(remoteWebDriver, Duration.ofSeconds(wait))
+                .until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
+        clickSpace.click();
+
+        return Optional.ofNullable(clickSpace);
+    }
+
+    public Optional<WebElement> findElementNotButtonByXpathAndClick(Long sleepTime, Long wait, String xpath, RemoteWebDriver remoteWebDriver) throws InterruptedException {
+        Thread.sleep(sleepTime);
+        WebElement clickSpace = new WebDriverWait(remoteWebDriver, Duration.ofSeconds(wait))
+                .until(ExpectedConditions.presenceOfElementLocated(By.xpath(xpath)));
+        clickSpace.click();
+
+        return Optional.ofNullable(clickSpace);
+    }
+
     public Optional<WebElement> findElementByXpathAndSendKeys(Long sleepTime, Long wait, String xpath, Keys keys, RemoteWebDriver remoteWebDriver) throws InterruptedException {
         Thread.sleep(sleepTime);
         WebElement sendBox = new WebDriverWait(remoteWebDriver, Duration.ofSeconds(wait))
@@ -54,6 +71,14 @@ public class SeleniumHelperComponent {
         sendBox.sendKeys(keys);
 
         return Optional.of(sendBox);
+    }
+
+    public Optional<WebElement> switchToFrameByClassName(Long sleepTime, Long wait, String className, RemoteWebDriver remoteWebDriver) throws InterruptedException {
+        Thread.sleep(sleepTime);
+        WebElement frame = new WebDriverWait(remoteWebDriver, Duration.ofSeconds(wait))
+                .until(ExpectedConditions.presenceOfElementLocated(By.className(className)));
+        remoteWebDriver.switchTo().frame(frame);
+        return Optional.of(frame);
     }
 
     public Optional<WebElement> findElementByClassNameWithSendKeys(Long sleepTime, Long wait, String className, String keys, RemoteWebDriver remoteWebDriver) throws InterruptedException {
