@@ -34,4 +34,10 @@ public class NfeFileModel {
 
     @Column(name = "remote_driver_upload", nullable = false)
     private String remoteDriverUpload;
+
+    @Column(name = "nome_empresa", nullable = false)
+    private String nomeEmpresa;
+
+    @Column(name = "cnpj", nullable = false)
+    private String cnpj;
 }
