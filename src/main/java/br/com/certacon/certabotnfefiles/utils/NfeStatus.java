@@ -1,5 +1,5 @@
 package br.com.certacon.certabotnfefiles.utils;
 
 public enum NfeStatus {
-    ERROR, LOGGED
+    ERROR, FOUND, READY, CHANGED, LOGGED
 }
