@@ -22,13 +22,16 @@ public class NfeFileModel {
     @Column(name = "arquivo_nfe_id", nullable = false)
     private UUID id;
 
-    @Column(name = "username")
+    @Column(name = "username", nullable = false)
     private String username;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private NfeStatus status;
+
+    @Column(name = "remote_driver_upload", nullable = false)
+    private String remoteDriverUpload;
 }
