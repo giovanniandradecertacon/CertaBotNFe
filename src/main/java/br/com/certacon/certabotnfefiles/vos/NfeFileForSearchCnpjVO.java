@@ -17,6 +17,10 @@ public class NfeFileForSearchCnpjVO {
 
     private String cnpj;
 
+    private String downloadPath;
+
+    private String nfeFileName;
+
     public NfeFileModel toModel() {
         return NfeFileModel.builder()
                 .id(idForSearch)
