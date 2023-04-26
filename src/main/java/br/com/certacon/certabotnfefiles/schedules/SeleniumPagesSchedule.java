@@ -8,6 +8,7 @@ import br.com.certacon.certabotnfefiles.pages.UploadFilesPage;
 import br.com.certacon.certabotnfefiles.repositories.NfeFileRepository;
 import br.com.certacon.certabotnfefiles.utils.NfeStatus;
 import br.com.certacon.certabotnfefiles.vos.NfeFileForLoginVO;
+import br.com.certacon.certabotnfefiles.vos.NfeFileForSearchCnpjVO;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,18 +20,17 @@ import java.util.List;
 
 @Service
 public class SeleniumPagesSchedule {
-    @Value("${config.ip}")
-    private String ip;
-
     private final LoginCertaconWebPage loginPage;
     private final CertaconHomePage homePage;
-    private final UploadFilesPage filesPage;
+    private final UploadFilesPage uploadPage;
     private final NfeFileRepository nfeFileRepository;
+    @Value("${config.ip}")
+    private String ip;
 
     public SeleniumPagesSchedule(LoginCertaconWebPage loginPage, CertaconHomePage homePage, UploadFilesPage filesPage, NfeFileRepository nfeFileRepository) {
         this.loginPage = loginPage;
         this.homePage = homePage;
-        this.filesPage = filesPage;
+        this.uploadPage = filesPage;
         this.nfeFileRepository = nfeFileRepository;
     }
 
@@ -38,12 +38,12 @@ public class SeleniumPagesSchedule {
     public boolean pagesSchedule() throws MalformedURLException {
         List<NfeFileModel> nfeFilesList = nfeFileRepository.findAll();
 
-        if (!nfeFilesList.isEmpty()){
+        if (!nfeFilesList.isEmpty()) {
             RemoteWebDriverConfig config = new RemoteWebDriverConfig();
             RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(ip + ":4444/wd/hub"), config.chromeOptions());
 
             nfeFilesList.forEach(nfeFile -> {
-                if(nfeFile.getStatus() == NfeStatus.READY){
+                if (nfeFile.getStatus() == NfeStatus.READY) {
                     try {
                         NfeFileForLoginVO nfeLoginVO = NfeFileForLoginVO.builder()
                                 .id(nfeFile.getId())
@@ -52,18 +52,26 @@ public class SeleniumPagesSchedule {
                                 .password(nfeFile.getPassword())
                                 .build();
                         nfeFile = loginPage.loginInput(nfeLoginVO, remoteWebDriver);
-                        if(nfeFile.getStatus() == NfeStatus.LOGGED){
+                        if (nfeFile.getStatus() == NfeStatus.LOGGED) {
                             NfeStatus homePageStatus = homePage.closeAndNavigate(remoteWebDriver);
                             nfeFile.setStatus(homePageStatus);
-                            if(nfeFile.getStatus() == NfeStatus.CHANGED){
-
+                            if (nfeFile.getStatus() == NfeStatus.CHANGED) {
+                                NfeFileForSearchCnpjVO nfeSearchVO = NfeFileForSearchCnpjVO.builder()
+                                        .cnpj(nfeFile.getCnpj())
+                                        .nomeEmpresa(nfeFile.getNomeEmpresa())
+                                        .idForSearch(nfeFile.getId())
+                                        .build();
+                                nfeFile = uploadPage.navigateOnUploadPage(nfeSearchVO, remoteWebDriver);
+                                nfeFile.getStatus();
                             }
                         }
-                    }catch (RuntimeException e){
+                    } catch (RuntimeException e) {
                         throw new RuntimeException();
                     } catch (MalformedURLException e) {
                         throw new RuntimeException(e);
-                    }finally {
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    } finally {
                         remoteWebDriver.quit();
                     }
                 }
