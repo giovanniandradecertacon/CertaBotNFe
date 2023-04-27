@@ -1,6 +1,6 @@
 package br.com.certacon.certabotnfefiles.models;
 
-import br.com.certacon.certabotnfefiles.utils.NfeStatus;
+import br.com.certacon.certabotnfefiles.utils.NfeStatusForSeleniumSchedule;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,7 +30,7 @@ public class NfeFileModel {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private NfeStatus status;
+    private NfeStatusForSeleniumSchedule status;
 
     @Column(name = "remote_driver_upload", nullable = false)
     private String remoteDriverUpload;

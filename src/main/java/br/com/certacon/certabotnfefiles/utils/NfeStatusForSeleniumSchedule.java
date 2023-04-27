@@ -1,5 +1,5 @@
 package br.com.certacon.certabotnfefiles.utils;
 
-public enum NfeStatus {
+public enum NfeStatusForSeleniumSchedule {
     ERROR, FOUND, READY, CHANGED, LOGGED
 }

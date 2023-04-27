@@ -7,7 +7,7 @@ import br.com.certacon.certabotnfefiles.pages.CertaconHomePage;
 import br.com.certacon.certabotnfefiles.pages.LoginCertaconWebPage;
 import br.com.certacon.certabotnfefiles.pages.UploadFilesPage;
 import br.com.certacon.certabotnfefiles.repositories.NfeFileRepository;
-import br.com.certacon.certabotnfefiles.utils.NfeStatus;
+import br.com.certacon.certabotnfefiles.utils.NfeStatusForSeleniumSchedule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,7 +44,7 @@ class SeleniumServicesScheduleTest {
                 .remoteDriverUpload("http://192.168.0.62/tributario")
                 .username("giovanni.andrade@certacon.com.br")
                 .password("1")
-                .status(NfeStatus.READY)
+                .status(NfeStatusForSeleniumSchedule.READY)
                 .cnpj("00.030.181/0006-03")
                 .nomeEmpresa("DROGARIA PRO VITA LTDA")
                 .build();

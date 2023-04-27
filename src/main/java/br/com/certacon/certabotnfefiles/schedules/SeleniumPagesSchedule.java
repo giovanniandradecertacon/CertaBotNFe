@@ -6,7 +6,7 @@ import br.com.certacon.certabotnfefiles.pages.CertaconHomePage;
 import br.com.certacon.certabotnfefiles.pages.LoginCertaconWebPage;
 import br.com.certacon.certabotnfefiles.pages.UploadFilesPage;
 import br.com.certacon.certabotnfefiles.repositories.NfeFileRepository;
-import br.com.certacon.certabotnfefiles.utils.NfeStatus;
+import br.com.certacon.certabotnfefiles.utils.NfeStatusForSeleniumSchedule;
 import br.com.certacon.certabotnfefiles.vos.NfeFileForLoginVO;
 import br.com.certacon.certabotnfefiles.vos.NfeFileForSearchCnpjVO;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -43,7 +43,7 @@ public class SeleniumPagesSchedule {
             RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(ip + ":4444/wd/hub"), config.chromeOptions());
 
             nfeFilesList.forEach(nfeFile -> {
-                if (nfeFile.getStatus() == NfeStatus.READY) {
+                if (nfeFile.getStatus() == NfeStatusForSeleniumSchedule.READY) {
                     try {
                         NfeFileForLoginVO nfeLoginVO = NfeFileForLoginVO.builder()
                                 .id(nfeFile.getId())
@@ -52,10 +52,10 @@ public class SeleniumPagesSchedule {
                                 .password(nfeFile.getPassword())
                                 .build();
                         nfeFile = loginPage.loginInput(nfeLoginVO, remoteWebDriver);
-                        if (nfeFile.getStatus() == NfeStatus.LOGGED) {
-                            NfeStatus homePageStatus = homePage.closeAndNavigate(remoteWebDriver);
+                        if (nfeFile.getStatus() == NfeStatusForSeleniumSchedule.LOGGED) {
+                            NfeStatusForSeleniumSchedule homePageStatus = homePage.closeAndNavigate(remoteWebDriver);
                             nfeFile.setStatus(homePageStatus);
-                            if (nfeFile.getStatus() == NfeStatus.CHANGED) {
+                            if (nfeFile.getStatus() == NfeStatusForSeleniumSchedule.CHANGED) {
                                 NfeFileForSearchCnpjVO nfeSearchVO = NfeFileForSearchCnpjVO.builder()
                                         .cnpj(nfeFile.getCnpj())
                                         .nomeEmpresa(nfeFile.getNomeEmpresa())
