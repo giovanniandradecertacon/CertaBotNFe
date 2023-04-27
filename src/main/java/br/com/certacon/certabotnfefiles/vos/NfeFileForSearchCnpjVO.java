@@ -17,7 +17,7 @@ public class NfeFileForSearchCnpjVO {
 
     private String cnpj;
 
-    private String downloadPath;
+    private String pathToFile;
 
     private String nfeFileName;
 

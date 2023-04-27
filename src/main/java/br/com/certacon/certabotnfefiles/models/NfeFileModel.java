@@ -40,4 +40,10 @@ public class NfeFileModel {
 
     @Column(name = "cnpj", nullable = false)
     private String cnpj;
+
+    @Column(name = "file_name")
+    private String fileName;
+
+    @Column(name = "path_to_file")
+    private String pathToFile;
 }
