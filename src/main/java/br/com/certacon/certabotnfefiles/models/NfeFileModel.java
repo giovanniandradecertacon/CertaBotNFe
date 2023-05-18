@@ -23,12 +23,6 @@ public class NfeFileModel {
     @Column(name = "arquivo_nfe_id")
     private UUID id;
 
-    @Column(name = "username", nullable = false)
-    private String username;
-
-    @Column(name = "password", nullable = false)
-    private String password;
-
     @Column(name = "created_at")
     private Date createdAt;
 
@@ -39,18 +33,9 @@ public class NfeFileModel {
     @Enumerated(EnumType.STRING)
     private NfeStatus status;
 
-    @Column(name = "remote_driver_upload", nullable = false)
-    private String remoteDriverUpload;
-
-    @Column(name = "nome_empresa", nullable = false)
-    private String nomeEmpresa;
-
-    @Column(name = "cnpj", nullable = false)
-    private String cnpj;
-
     @Column(name = "file_name", nullable = false)
     private String fileName;
 
-    @Column(name = "path_to_file", nullable = false)
-    private String pathToFile;
+    @ManyToOne
+    private ProcessFileModel processFileModel;
 }
