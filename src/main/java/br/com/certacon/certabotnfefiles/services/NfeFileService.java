@@ -35,8 +35,6 @@ public class NfeFileService {
     private NfeFileModel updateFile(NfeFileModel existingFile, NfeFileModel updatedFile) {
         existingFile.setFileName(updatedFile.getFileName());
         existingFile.setStatus(NfeStatus.UPDATED);
-        existingFile.setPathToFile(updatedFile.getPathToFile());
-        existingFile.setRemoteDriverUpload(updatedFile.getRemoteDriverUpload());
         existingFile.setCreatedAt(updatedFile.getCreatedAt());
         existingFile.setUpdatedAt(new Date());
         return existingFile;
