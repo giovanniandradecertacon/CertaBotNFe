@@ -1,7 +1,7 @@
 package br.com.certacon.certabotnfefiles.pages;
 
 import br.com.certacon.certabotnfefiles.helpers.SeleniumHelperComponent;
-import br.com.certacon.certabotnfefiles.utils.NfeStatus;
+import br.com.certacon.certabotnfefiles.utils.ProcessStatus;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -18,8 +18,8 @@ public class CertaconHomePage {
         this.helper = helper;
     }
 
-    public NfeStatus closeAndNavigate(RemoteWebDriver remoteWebDriver) throws MalformedURLException {
-        NfeStatus homePageStatus = null;
+    public ProcessStatus closeAndNavigate(RemoteWebDriver remoteWebDriver) throws MalformedURLException {
+        ProcessStatus homePageStatus = null;
 
         try {
             Optional<WebElement> tutorialElement = helper.findElementByXpathAndSendKeys(1000L, 30L, "/html/body/div[3]/div/div/button", Keys.ESCAPE, remoteWebDriver);
@@ -32,14 +32,14 @@ public class CertaconHomePage {
                         if (efdElement.isPresent()) {
                             Optional<WebElement> uploadFilesElement = helper.findElementNotButtonByXpathAndClick(1000L, 30L, "/html/body/div[6]/div[2]/div/div/div/div/div/div[2]/div/div/div/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div[2]/div/div/div/ul/li/a", remoteWebDriver);
                             if (uploadFilesElement.isPresent()) {
-                                homePageStatus = NfeStatus.CHANGED;
+                                homePageStatus = ProcessStatus.CHANGED;
                             }
                         }
                     }
                 }
             }
         } catch (InterruptedException e) {
-            homePageStatus = NfeStatus.ERROR;
+            homePageStatus = ProcessStatus.ERROR;
             throw new RuntimeException();
         } finally {
             return homePageStatus;
