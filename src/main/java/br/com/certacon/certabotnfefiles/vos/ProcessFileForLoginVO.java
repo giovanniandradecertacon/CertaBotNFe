@@ -1,6 +1,6 @@
 package br.com.certacon.certabotnfefiles.vos;
 
-import br.com.certacon.certabotnfefiles.models.NfeFileModel;
+import br.com.certacon.certabotnfefiles.models.ProcessFileModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @Builder
-public class NfeFileForLoginVO {
+public class ProcessFileForLoginVO {
     private UUID id;
     private String username;
 
@@ -18,8 +18,8 @@ public class NfeFileForLoginVO {
 
     private String remoteDriverUpload;
 
-    public NfeFileModel toModel(){
-        return NfeFileModel.builder()
+    public ProcessFileModel toModel() {
+        return ProcessFileModel.builder()
                 .id(id)
                 .username(username)
                 .password(password)

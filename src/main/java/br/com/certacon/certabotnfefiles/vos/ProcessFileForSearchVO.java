@@ -1,6 +1,6 @@
 package br.com.certacon.certabotnfefiles.vos;
 
-import br.com.certacon.certabotnfefiles.models.NfeFileModel;
+import br.com.certacon.certabotnfefiles.models.ProcessFileModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @Builder
-public class NfeFileForSearchCnpjVO {
+public class ProcessFileForSearchVO {
     private UUID idForSearch;
 
     private String nomeEmpresa;
@@ -21,10 +21,11 @@ public class NfeFileForSearchCnpjVO {
 
     private String nfeFileName;
 
-    public NfeFileModel toModel() {
-        return NfeFileModel.builder()
+    public ProcessFileModel toModel() {
+        return ProcessFileModel.builder()
                 .id(idForSearch)
                 .nomeEmpresa(nomeEmpresa)
+                .downloadPath(pathToFile)
                 .cnpj(cnpj)
                 .build();
     }
