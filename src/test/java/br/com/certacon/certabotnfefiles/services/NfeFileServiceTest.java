@@ -34,13 +34,7 @@ class NfeFileServiceTest {
 
         fileModel = NfeFileModel.builder()
                 .id(UUID.randomUUID())
-                .nomeEmpresa("Certacon")
-                .cnpj("00.181.904/0001-97")
-                .username("giovanni.andrade@certacon.com.br")
-                .pathToFile("D:\\loadFileData\\192168062\\06333120000197\\2023\\NFe")
                 .fileName("NFeCertaconTeste.zip")
-                .password("1")
-                .remoteDriverUpload("http://192.168.0.62/tributario")
                 .build();
     }
 
@@ -55,7 +49,7 @@ class NfeFileServiceTest {
         BDDMockito.when(fileRepository.save(any(NfeFileModel.class))).thenReturn(fileModel);
         NfeFileModel actual = fileService.saveOrUpdate(fileModel);
         //Then
-        assertEquals(fileModel.getCnpj(), actual.getCnpj());
+        assertEquals(fileModel.getId(), actual.getId());
     }
 
     @Test
@@ -64,13 +58,7 @@ class NfeFileServiceTest {
         //Given
         NfeFileModel nfeFileModel = NfeFileModel.builder()
                 .id(UUID.randomUUID())
-                .nomeEmpresa("Certacon")
-                .cnpj("00.181.904/0001-97")
-                .username("giovanni.andrade@certacon.com.br")
-                .pathToFile("D:\\loadFileData\\192168062\\06333120000197\\2023\\NFe")
-                .fileName("TesteFile.zip")
-                .password("1")
-                .remoteDriverUpload("http://192.168.0.62/tributario")
+                .fileName(null)
                 .build();
         IllegalArgumentException expected = new IllegalArgumentException("File name cannot be null or empty");
         //When
