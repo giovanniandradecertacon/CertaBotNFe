@@ -16,4 +16,4 @@ spring:
     password: gigi1704
 
 config:
-  ip: http://192.168.0.123
+  ip: http://192.168.1.64
