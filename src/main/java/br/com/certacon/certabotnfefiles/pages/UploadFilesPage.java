@@ -1,9 +1,9 @@
 package br.com.certacon.certabotnfefiles.pages;
 
 import br.com.certacon.certabotnfefiles.helpers.SeleniumHelperComponent;
-import br.com.certacon.certabotnfefiles.models.NfeFileModel;
-import br.com.certacon.certabotnfefiles.repositories.NfeFileRepository;
-import br.com.certacon.certabotnfefiles.vos.NfeFileForSearchCnpjVO;
+import br.com.certacon.certabotnfefiles.models.ProcessFileModel;
+import br.com.certacon.certabotnfefiles.repositories.ProcessFileRepository;
+import br.com.certacon.certabotnfefiles.vos.ProcessFileForSearchVO;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -15,15 +15,15 @@ import java.util.Optional;
 @Slf4j
 public class UploadFilesPage {
     private final SeleniumHelperComponent helper;
-    private final NfeFileRepository nfeFileRepository;
+    private final ProcessFileRepository processFileRepository;
 
-    public UploadFilesPage(SeleniumHelperComponent helper, NfeFileRepository nfeFileRepository) {
+    public UploadFilesPage(SeleniumHelperComponent helper, ProcessFileRepository processFileRepository) {
         this.helper = helper;
-        this.nfeFileRepository = nfeFileRepository;
+        this.processFileRepository = processFileRepository;
     }
 
-    public NfeFileModel navigateOnUploadPage(NfeFileForSearchCnpjVO searchCnpjVO, RemoteWebDriver remoteWebDriver) throws InterruptedException {
-        Optional<NfeFileModel> modelOptional = nfeFileRepository.findById(searchCnpjVO.toModel().getId());
+    public ProcessFileModel navigateOnUploadPage(ProcessFileForSearchVO searchCnpjVO, RemoteWebDriver remoteWebDriver) throws InterruptedException {
+        Optional<ProcessFileModel> modelOptional = processFileRepository.findById(searchCnpjVO.toModel().getId());
         String[] cnpjTratada = searchCnpjVO.getCnpj().split("/");
         if (modelOptional.isPresent()) {
             Optional<WebElement> inputSearchTabElement = helper.findElementByXpathAndSendKeysString(1000L, 30L, "/html/body/div[6]/div[2]/div/div/div/div/div/div[2]/div/div/div/div[1]/div/div[3]/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[2]/div[1]/div/div[1]/div/div/div/form/table/tbody/tr[2]/td[2]/table/tbody/tr/td[1]/input", "TRIBUTARIO", remoteWebDriver);
