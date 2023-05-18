@@ -1,10 +1,10 @@
 package br.com.certacon.certabotnfefiles.pages;
 
 import br.com.certacon.certabotnfefiles.helpers.SeleniumHelperComponent;
-import br.com.certacon.certabotnfefiles.models.NfeFileModel;
-import br.com.certacon.certabotnfefiles.repositories.NfeFileRepository;
-import br.com.certacon.certabotnfefiles.utils.NfeStatus;
-import br.com.certacon.certabotnfefiles.vos.NfeFileForLoginVO;
+import br.com.certacon.certabotnfefiles.models.ProcessFileModel;
+import br.com.certacon.certabotnfefiles.repositories.ProcessFileRepository;
+import br.com.certacon.certabotnfefiles.utils.ProcessStatus;
+import br.com.certacon.certabotnfefiles.vos.ProcessFileForLoginVO;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -17,33 +17,33 @@ public class LoginCertaconWebPage {
 
     private final SeleniumHelperComponent helper;
 
-    private final NfeFileRepository fileRepository;
+    private final ProcessFileRepository processRepository;
 
-    public LoginCertaconWebPage(SeleniumHelperComponent helper, NfeFileRepository fileRepository) {
-        this.fileRepository = fileRepository;
+    public LoginCertaconWebPage(SeleniumHelperComponent helper, ProcessFileRepository processRepository) {
+        this.processRepository = processRepository;
         this.helper = helper;
     }
 
-    public NfeFileModel loginInput(NfeFileForLoginVO nfeFileForLoginVO, RemoteWebDriver remoteWebDriver) {
-        Optional<NfeFileModel> fileModel = fileRepository.findById(nfeFileForLoginVO.toModel().getId());
-        NfeStatus loginStatus = null;
+    public ProcessFileModel loginInput(ProcessFileForLoginVO processFileVO, RemoteWebDriver remoteWebDriver) {
+        Optional<ProcessFileModel> fileModel = processRepository.findById(processFileVO.toModel().getId());
+        ProcessStatus loginStatus = null;
         try {
 
-            Boolean goToUrl = helper.navigateToUrl(remoteWebDriver, nfeFileForLoginVO.getRemoteDriverUpload());
+            Boolean goToUrl = helper.navigateToUrl(remoteWebDriver, processFileVO.getRemoteDriverUpload());
             if (goToUrl.equals(Boolean.TRUE)) {
-                Optional<WebElement> usernameElement = helper.findElementByIdWithSendKeys(1000L, 30L, "geo-login-name", nfeFileForLoginVO.getUsername(), remoteWebDriver);
+                Optional<WebElement> usernameElement = helper.findElementByIdWithSendKeys(1000L, 30L, "geo-login-name", processFileVO.getUsername(), remoteWebDriver);
                 if (usernameElement.isPresent()) {
-                    Optional<WebElement> passwordElement = helper.findElementByXpathAndSendKeysString(1000L, 30L, "/html/body/div[3]/div[2]/div/div[2]/div[2]/div/input", nfeFileForLoginVO.getPassword(), remoteWebDriver);
+                    Optional<WebElement> passwordElement = helper.findElementByXpathAndSendKeysString(1000L, 30L, "/html/body/div[3]/div[2]/div/div[2]/div[2]/div/input", processFileVO.getPassword(), remoteWebDriver);
                     if (passwordElement.isPresent()) {
                         Optional<WebElement> loginElement = helper.findElementByXpathAndSendKeys(1000L, 30L, "/html/body/div[3]/div[2]/div/div[2]/div[3]/a", Keys.ENTER, remoteWebDriver);
-                        if (loginElement.isPresent()) loginStatus = NfeStatus.LOGGED;
+                        if (loginElement.isPresent()) loginStatus = ProcessStatus.LOGGED;
                     }
                 }
             } else {
-                loginStatus = NfeStatus.ERROR;
+                loginStatus = ProcessStatus.ERROR;
             }
         } catch (RuntimeException e) {
-            loginStatus = NfeStatus.ERROR;
+            loginStatus = ProcessStatus.ERROR;
             throw new RuntimeException("Houve Falha no Login!");
         } finally {
             fileModel.get().setStatus(loginStatus);
