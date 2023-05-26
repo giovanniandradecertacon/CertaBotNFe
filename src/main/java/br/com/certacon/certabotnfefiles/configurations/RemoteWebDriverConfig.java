@@ -18,7 +18,7 @@ public class RemoteWebDriverConfig {
             put("name", "Test badge...");
 
             /* How to set session timeout */
-            put("sessionTimeout", "30m");
+            put("sessionTimeout", "60m");
 
             /* How to set timezone */
             put("env", new ArrayList<String>() {{
