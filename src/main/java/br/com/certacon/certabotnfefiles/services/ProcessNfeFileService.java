@@ -1,80 +1,122 @@
 package br.com.certacon.certabotnfefiles.services;
 
+
+import br.com.certacon.certabotnfefiles.dto.ProcessFileDto;
+import br.com.certacon.certabotnfefiles.exception.BadRequestException;
+import br.com.certacon.certabotnfefiles.models.NfeFileModel;
 import br.com.certacon.certabotnfefiles.models.ProcessFileModel;
+import br.com.certacon.certabotnfefiles.repositories.NfeFileRepository;
 import br.com.certacon.certabotnfefiles.repositories.ProcessFileRepository;
 import br.com.certacon.certabotnfefiles.utils.ProcessStatus;
 import org.openqa.selenium.NotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ProcessNfeFileService {
     private final ProcessFileRepository processFileRepository;
+    private final NfeFileRepository nfeFileRepository;
 
-    public ProcessNfeFileService(ProcessFileRepository processFileRepository) {
+    public ProcessNfeFileService(ProcessFileRepository processFileRepository, NfeFileRepository nfeFileRepository) {
         this.processFileRepository = processFileRepository;
+        this.nfeFileRepository = nfeFileRepository;
     }
 
-    public Optional<ProcessFileModel> findById(UUID id) {
-        if (id != null) {
-            Optional<ProcessFileModel> model = processFileRepository.findById(id);
-            if (model.isEmpty()) {
-                throw new NotFoundException("Processo não existe");
-            } else {
-                return model;
+    public Optional<ProcessFileModel> searchById(UUID id) throws NotFoundException, BadRequestException {
+        Optional<ProcessFileModel> processFileModel = processFileRepository.findById(id);
+        try {
+            if (!processFileModel.isPresent()) {
+                throw new NotFoundException();
             }
-        } else {
-            throw new NullPointerException("Id não pode ser nulo");
+        } catch (BadRequestException e) {
+            throw new BadRequestException();
+        } finally {
+            return processFileModel;
         }
+    }
+
+    public ProcessFileModel createFile(ProcessFileDto processFileDto) throws NotFoundException, BadRequestException {
+        ProcessFileModel model = null;
+        try {
+            if (processFileDto != null) {
+                model = processFileDto.toModel();
+                model.setCreatedAt(new Date());
+                model.setStatus(ProcessStatus.CREATED);
+                Optional<NfeFileModel> arquivoModel = nfeFileRepository.findById(processFileDto.getArquivoId());
+                if (!arquivoModel.isEmpty()) {
+                    if (processFileDto.toModel().getFileName().endsWith("/") || processFileDto.toModel().getDownloadPath().endsWith("/") || processFileDto.toModel().getFileName().startsWith("/")) {
+                        String filename = processFileDto.getFileName().replaceAll("/", "");
+                        model.setFileName(filename);
+                        String downloadPath = processFileDto.getDownloadPath();
+                        downloadPath = downloadPath.substring(0, downloadPath.length() - 1);
+                        model.setDownloadPath(downloadPath);
+                    }
+                    List<NfeFileModel> modelList = new ArrayList<>();
+                    modelList.add(arquivoModel.get());
+                    model.setArquivosNFeModel(modelList);
+                    model = processFileRepository.save(model);
+                    return model;
+                } else {
+                    throw new NotFoundException();
+                }
+            }
+        } catch (BadRequestException e) {
+            throw new BadRequestException();
+        }
+        return model;
     }
 
     public List<ProcessFileModel> findAll() {
+        List<ProcessFileModel> processFileModelList = processFileRepository.findAll();
+        return processFileModelList;
+    }
+
+    public ProcessFileModel updateFile(ProcessFileDto processFileDto) throws RuntimeException {
+        ProcessFileModel model = null;
         try {
-            return processFileRepository.findAll();
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Algo deu errado");
+            Optional<ProcessFileModel> processFileModel = processFileRepository.findById(processFileDto.toModel().getId());
+
+            if (processFileModel.isPresent()) {
+                model = processFileModel.get();
+                model.setId(model.getId());
+                model.setCreatedAt(model.getCreatedAt());
+                model.setUsername(processFileDto.getUsername() == null ? model.getUsername() : processFileDto.getUsername());
+                model.setPassword(processFileDto.getPassword() == null ? model.getPassword() : processFileDto.getPassword());
+                model.setRemoteDriverDownload(processFileDto.getRemoteDriverDownload() == null ? model.getRemoteDriverDownload() : processFileDto.getRemoteDriverDownload());
+                model.setRemoteDriverUpload(processFileDto.getRemoteDriverUpload() == null ? model.getRemoteDriverUpload() : processFileDto.getRemoteDriverUpload());
+                model.setDownloadPath(processFileDto.getDownloadPath() == null ? model.getDownloadPath() : processFileDto.getDownloadPath());
+                model.setUpdatedAt(new Date());
+                model.setStatus(ProcessStatus.UPDATED);
+                model.setFileName(processFileDto.getFileName() == null ? model.getFileName() : processFileDto.getFileName());
+
+                processFileRepository.save(model);
+            } else {
+                throw new RuntimeException();
+            }
+        } catch (BadRequestException e) {
+            throw new BadRequestException();
+        } finally {
+            return model;
         }
     }
 
-    public ProcessFileModel saveOrUpdate(ProcessFileModel processFileModel) {
-        validateNfeFile(processFileModel);
-        Optional<ProcessFileModel> existingFile = processFileRepository.findByFileName(processFileModel.getFileName());
-        if (existingFile.isPresent()) {
-            ProcessFileModel updatedFile = updateFile(existingFile.get(), processFileModel);
-            return processFileRepository.save(updatedFile);
-        } else {
-            processFileModel.setCreatedAt(new Date());
-            processFileModel.setStatus(ProcessStatus.CREATED);
-            return processFileRepository.save(processFileModel);
-        }
-    }
+    public boolean deleteFile(UUID id) {
+        boolean isDeleted = false;
+        try {
+            Optional<ProcessFileModel> modelOptional = processFileRepository.findById(id);
 
-    private ProcessFileModel updateFile(ProcessFileModel existingFile, ProcessFileModel updatedFile) {
-        existingFile.setFileName(updatedFile.getFileName());
-        existingFile.setStatus(ProcessStatus.UPDATED);
-        existingFile.setRemoteDriverUpload(updatedFile.getRemoteDriverUpload());
-        existingFile.setCreatedAt(updatedFile.getCreatedAt());
-        existingFile.setUpdatedAt(new Date());
-        return existingFile;
-    }
-
-    private void validateNfeFile(ProcessFileModel fileModel) {
-        if (fileModel.getFileName() == null || fileModel.getFileName().isEmpty()) {
-            throw new IllegalArgumentException("File name cannot be null or empty");
+            if (!modelOptional.isPresent()) {
+                throw new NotFoundException();
+            } else {
+                isDeleted = Boolean.TRUE;
+                processFileRepository.delete(modelOptional.get());
+            }
+        } catch (BadRequestException e) {
+            throw new BadRequestException();
+        } finally {
+            return isDeleted;
         }
-    }
 
-    public Boolean deleteFile(UUID id) {
-        Optional<ProcessFileModel> modelOptional = processFileRepository.findById(id);
-        if (!modelOptional.isPresent()) {
-            throw new NotFoundException("Arquivo não encontrado");
-        } else {
-            processFileRepository.delete(modelOptional.get());
-            return Boolean.TRUE;
-        }
     }
 }
