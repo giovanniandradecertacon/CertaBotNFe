@@ -92,15 +92,6 @@ public class SeleniumHelperComponent {
         return Optional.of(frame);
     }
 
-    public Optional<WebElement> findElementByClassNameWithSendKeys(Long sleepTime, Long wait, String className, String keys, RemoteWebDriver remoteWebDriver) throws InterruptedException {
-        Thread.sleep(sleepTime);
-        WebElement sendBox = new WebDriverWait(remoteWebDriver, Duration.ofSeconds(wait))
-                .until(ExpectedConditions.presenceOfElementLocated(By.className(className)));
-        sendBox.sendKeys(keys);
-
-        return Optional.ofNullable(sendBox);
-    }
-
     public Optional<WebElement> findElementByCssSelectorWithSendKeys(Long sleepTime, Long wait, String cssSelector, String keys, RemoteWebDriver remoteWebDriver) throws InterruptedException {
         Thread.sleep(sleepTime);
         WebElement sendBox = new WebDriverWait(remoteWebDriver, Duration.ofSeconds(wait))
@@ -108,15 +99,6 @@ public class SeleniumHelperComponent {
         sendBox.sendKeys(keys);
 
         return Optional.ofNullable(sendBox);
-    }
-
-    public Optional<WebElement> findElementByXpathToBeClickableAndClick(Long sleepTime, Long wait, String xpath, RemoteWebDriver remoteWebDriver) throws InterruptedException {
-        Thread.sleep(sleepTime);
-        WebElement clickBox = new WebDriverWait(remoteWebDriver, Duration.ofSeconds(wait))
-                .until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
-        clickBox.click();
-
-        return Optional.ofNullable(clickBox);
     }
 
     public String findElementByXpathAndGetCssValue(Long sleepTime, Long wait, String xpath, String cssValue, RemoteWebDriver remoteWebDriver) throws InterruptedException {
@@ -127,12 +109,46 @@ public class SeleniumHelperComponent {
         return cssValueFromElement.getCssValue(cssValue);
     }
 
-    public String findElementByXpathAnGetText(Long sleepTime, Long wait, String xpath, RemoteWebDriver remoteWebDriver) throws InterruptedException {
-        Thread.sleep(sleepTime);
-        WebElement textValueFromElement = new WebDriverWait(remoteWebDriver, Duration.ofSeconds(wait))
-                .until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
+    public Optional<WebElement> findElementByXpathAnGetText(Long sleepTime, Long wait, String xpath, RemoteWebDriver remoteWebDriver) throws InterruptedException {
+        WebElement textValueFromElement = null;
+        try {
+            Thread.sleep(sleepTime);
+            textValueFromElement = new WebDriverWait(remoteWebDriver, Duration.ofSeconds(wait))
+                    .until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        } finally {
+            return Optional.ofNullable(textValueFromElement);
+        }
+    }
 
-        return textValueFromElement.getText();
+    public Optional<WebElement> findElementIsPresent(Long sleepTime, Long wait, String xpath, RemoteWebDriver remoteWebDriver) {
+        WebElement element = null;
+        try {
+            Thread.sleep(sleepTime);
+            element = new WebDriverWait(remoteWebDriver, Duration.ofSeconds(wait))
+                    .until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
+
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            return Optional.ofNullable(element);
+        }
+    }
+
+    public Optional<WebElement> findByXpathAndSendKeysForError(Long duration, RemoteWebDriver remoteWebDriver, String className) {
+        WebElement errorMessage = null;
+        try {
+            errorMessage = new WebDriverWait(remoteWebDriver, Duration.ofSeconds(duration))
+                    .until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(className)));
+            errorMessage.sendKeys(Keys.ESCAPE);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        } finally {
+            return Optional.ofNullable(errorMessage);
+        }
+
+
     }
 
 }
