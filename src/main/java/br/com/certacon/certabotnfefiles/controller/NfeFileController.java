@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
@@ -80,7 +79,7 @@ public class NfeFileController {
             @ApiResponse(responseCode = "500", description = "Erro no servidor", content = {@Content(mediaType = "application/json",
                     schema = @Schema(implementation = MessageExceptionHandler.class))})
     })
-    public ResponseEntity<NfeFileModel> update(@RequestBody NfeFileModel entity) throws Exception {
+    public ResponseEntity<NfeFileModel> update(@RequestBody NfeFileModel entity) {
         NfeFileModel response = fileService.saveOrUpdate(entity);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -97,7 +96,7 @@ public class NfeFileController {
             @ApiResponse(responseCode = "500", description = "Erro no servidor", content = {@Content(mediaType = "application/json",
                     schema = @Schema(implementation = MessageExceptionHandler.class))})
     })
-    public ResponseEntity delete(@PathVariable(value = "id") UUID id) throws FileNotFoundException {
+    public ResponseEntity delete(@PathVariable(value = "id") UUID id) {
         boolean entity = fileService.deleteFile(id);
         if (entity == Boolean.FALSE) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Arquivo não foi encontrado!");
