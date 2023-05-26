@@ -21,6 +21,10 @@ public class ProcessFileForSearchVO {
 
     private String nfeFileName;
 
+    private String percentage;
+
+    private String quantity;
+
     public ProcessFileModel toModel() {
         return ProcessFileModel.builder()
                 .id(idForSearch)
