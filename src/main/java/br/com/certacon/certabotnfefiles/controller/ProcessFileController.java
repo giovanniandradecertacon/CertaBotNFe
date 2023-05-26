@@ -1,5 +1,6 @@
 package br.com.certacon.certabotnfefiles.controller;
 
+import br.com.certacon.certabotnfefiles.dto.ProcessFileDto;
 import br.com.certacon.certabotnfefiles.exception.MessageExceptionHandler;
 import br.com.certacon.certabotnfefiles.models.ProcessFileModel;
 import br.com.certacon.certabotnfefiles.repositories.ProcessFileRepository;
@@ -13,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,8 +40,8 @@ public class ProcessFileController {
             @ApiResponse(responseCode = "500", description = "Erro no servidor", content = {@Content(mediaType = "application/json",
                     schema = @Schema(implementation = MessageExceptionHandler.class))})
     })
-    public ResponseEntity<ProcessFileModel> create(@RequestBody ProcessFileModel entity) {
-        ProcessFileModel bot = processNfeFileService.saveOrUpdate(entity);
+    public ResponseEntity<ProcessFileModel> create(@RequestBody ProcessFileDto entityDTO) {
+        ProcessFileModel bot = processNfeFileService.createFile(entityDTO);
         return ResponseEntity.status(HttpStatus.OK).body(bot);
     }
 
@@ -81,8 +81,8 @@ public class ProcessFileController {
             @ApiResponse(responseCode = "500", description = "Erro no servidor", content = {@Content(mediaType = "application/json",
                     schema = @Schema(implementation = MessageExceptionHandler.class))})
     })
-    public ResponseEntity<ProcessFileModel> update(@RequestBody ProcessFileModel entity) throws Exception {
-        ProcessFileModel response = processNfeFileService.saveOrUpdate(entity);
+    public ResponseEntity<ProcessFileModel> update(@RequestBody ProcessFileDto entityDTO) throws Exception {
+        ProcessFileModel response = processNfeFileService.updateFile(entityDTO);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -98,7 +98,7 @@ public class ProcessFileController {
             @ApiResponse(responseCode = "500", description = "Erro no servidor", content = {@Content(mediaType = "application/json",
                     schema = @Schema(implementation = MessageExceptionHandler.class))})
     })
-    public ResponseEntity delete(@PathVariable(value = "id") UUID id) throws FileNotFoundException {
+    public ResponseEntity delete(@PathVariable(value = "id") UUID id) {
         boolean entity = processNfeFileService.deleteFile(id);
         if (entity == Boolean.FALSE) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Processo não foi encontrado!");
