@@ -36,6 +36,7 @@ public class NfeFileModel {
     @Column(name = "file_name", nullable = false)
     private String fileName;
 
+
     @ManyToOne
     private ProcessFileModel processFileModel;
 }
