@@ -36,9 +36,6 @@ public class ProcessFileModel {
     @JsonProperty(required = true)
     private String remoteDriverUpload;
 
-    @Column(name = "nome_tarefa")
-    private String taskName;
-
     @Column(name = "registros")
     private String Registers;
 
@@ -57,6 +54,10 @@ public class ProcessFileModel {
 
     @Column(name = "senha")
     private String password;
+
+    @Column(nullable = false, name = "Caminho_de_arquivo")
+    @JsonProperty(required = true)
+    private String filePath;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -78,7 +79,16 @@ public class ProcessFileModel {
     @Column(name = "cnpj", nullable = false)
     private String cnpj;
 
+    @Column(name = "arquivos_validos")
+    private String valid;
+
+    @Column(name = "arquivos_invalidos")
+    private String invalid;
+
+    @Column(name = "link_relatorio")
+    private String reportLink;
+
     @OneToMany(mappedBy = "processFileModel")
-    private List<NfeFileModel> arquivosEfdModel;
+    private List<NfeFileModel> arquivosNFeModel;
 
 }
