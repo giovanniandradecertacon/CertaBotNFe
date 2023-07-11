@@ -17,9 +17,25 @@ spring:
     enabled: false
   
   datasource:
-    url: jdbc:sqlserver://192.168.0.27;databaseName=CertaBotNFeDev;encrypt=false;integratedSecurity=false;
+    url: jdbc:sqlserver://192.168.0.39;databaseName=CertaBotNFeDev;encrypt=false;integratedSecurity=false;
     username: giovanni.andrade
     password: gigi1704
+  kafka:
+    request:
+      timeout:
+        ms: 600000
+    bootstrap-servers: certaconmsfileuploadprod.servicebus.windows.net:9093
+    client-id: organizer-service
+    properties:
+      sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password="Endpoint=sb://certaconmsfileuploadprod.servicebus.windows.net/;SharedAccessKeyName=SendReceiveOnly;SharedAccessKey=/EGltUOU9EG9HD9S8yauegZbuL+H7vUdi+AEhBtRYLE=";
+      sasl.mechanism: PLAIN
+      security.protocol: SASL_SSL
+    producer:
+      value-serializer: br.com.certacon.certabotnfefiles.kafka.producer.ProducerMessageSerializer
+    listener:
+      ack-mode: manual_immediate
 
+topic:
+  certabotupload: topic-certabot-upload
 config:
-  ip: http://192.168.0.26
+  ip: http://192.168.0.95
